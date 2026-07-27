@@ -1,31 +1,84 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
+/**
+ * The design system.
+ *
+ * Rules of engagement:
+ *  - Colour comes from a semantic token (`bg-card`, `text-muted-foreground`),
+ *    never a raw palette step, so light and dark stay in sync for free.
+ *  - Type comes from the named scale (`text-h2`, `text-lead`), never an
+ *    ad-hoc `text-3xl md:text-4xl lg:text-5xl` stack — the scale is already
+ *    fluid, so responsive size variants are unnecessary.
+ *  - Radius, elevation and duration are closed sets. If a value isn't here,
+ *    it doesn't belong in the product.
+ */
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "1.25rem",
+        sm: "1.5rem",
+        lg: "2rem",
+      },
       screens: {
-        "2xl": "1400px",
+        "2xl": "1280px",
       },
     },
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'system-ui', 'sans-serif'],
-        display: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ["Poppins", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        display: ["Playfair Display", "Georgia", "serif"],
+        // `font-serif` in existing markup should mean the brand display face,
+        // not the browser default stack.
+        serif: ["Playfair Display", "Georgia", "serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
+
+      /**
+       * Fluid scale. Each step interpolates between its mobile and desktop
+       * size, which removes the need for per-breakpoint overrides and
+       * eliminates the size "jumps" at breakpoint boundaries.
+       */
+      fontSize: {
+        /**
+         * The smallest step. Exists because `text-[0.6875rem]` was being
+         * hand-written in a dozen places — an unnamed scale step is still a
+         * scale step, it just isn't enforceable.
+         */
+        micro: ["0.6875rem", { lineHeight: "1.45" }],
+        overline: ["0.75rem", { lineHeight: "1", letterSpacing: "0.14em", fontWeight: "700" }],
+        caption: ["0.8125rem", { lineHeight: "1.5" }],
+        body: ["1rem", { lineHeight: "1.65" }],
+        lead: ["clamp(1.0625rem, 1rem + 0.35vw, 1.25rem)", { lineHeight: "1.6" }],
+        h4: ["clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem)", { lineHeight: "1.35", letterSpacing: "-0.01em" }],
+        h3: ["clamp(1.375rem, 1.2rem + 0.75vw, 1.75rem)", { lineHeight: "1.25", letterSpacing: "-0.015em" }],
+        h2: ["clamp(1.75rem, 1.35rem + 1.7vw, 2.5rem)", { lineHeight: "1.15", letterSpacing: "-0.02em" }],
+        h1: ["clamp(2.125rem, 1.55rem + 2.4vw, 3.25rem)", { lineHeight: "1.08", letterSpacing: "-0.025em" }],
+        // The mobile end is deliberately restrained: the hero headline is nine
+        // words, and at 2.5rem on a 360px screen it ran to nine lines.
+        display: ["clamp(2rem, 1.35rem + 3.1vw, 4.25rem)", { lineHeight: "1.06", letterSpacing: "-0.03em" }],
+      },
+
       colors: {
         border: "hsl(var(--border))",
+        "border-strong": "hsl(var(--border-strong))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          strong: "hsl(var(--surface-strong))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          soft: "hsl(var(--primary-soft))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -35,6 +88,10 @@ export default {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -42,6 +99,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          soft: "hsl(var(--accent-soft))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -51,22 +109,62 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
       },
+
+      /** One radius system. `--radius` (0.75rem) is the anchor. */
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        none: "0",
+        sm: "calc(var(--radius) - 0.375rem)", // 0.375rem
+        DEFAULT: "calc(var(--radius) - 0.25rem)", // 0.5rem
+        md: "calc(var(--radius) - 0.125rem)", // 0.625rem
+        lg: "var(--radius)", // 0.75rem
+        xl: "calc(var(--radius) + 0.25rem)", // 1rem
+        "2xl": "calc(var(--radius) + 0.5rem)", // 1.25rem
+        "3xl": "calc(var(--radius) + 1rem)", // 1.75rem
+        full: "9999px",
       },
+
+      /** One elevation system, driven by tokens so dark mode adapts. */
+      boxShadow: {
+        xs: "var(--shadow-xs)",
+        sm: "var(--shadow-sm)",
+        DEFAULT: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        xl: "var(--shadow-xl)",
+        "2xl": "var(--shadow-2xl)",
+        /** Four stacked layers. For objects that should read as lifted. */
+        float: "var(--shadow-float)",
+        ring: "var(--shadow-ring)",
+        none: "none",
+      },
+
+      spacing: {
+        /** Vertical rhythm for page sections — the only section padding. */
+        section: "clamp(4rem, 7vw, 7rem)",
+        "section-lg": "clamp(5.5rem, 9vw, 9rem)",
+      },
+
+      maxWidth: {
+        /** Comfortable reading measures. */
+        measure: "68ch",
+        "measure-sm": "54ch",
+        content: "1280px",
+      },
+
+      transitionTimingFunction: {
+        out: "var(--ease-out)",
+        "in-out": "var(--ease-in-out)",
+        spring: "var(--ease-spring)",
+      },
+
+      transitionDuration: {
+        fast: "var(--duration-fast)",
+        base: "var(--duration-base)",
+        slow: "var(--duration-slow)",
+        slower: "var(--duration-slower)",
+      },
+
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -76,32 +174,23 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "fade-up": {
+          from: { opacity: "0", transform: "translate3d(0, 12px, 0)" },
+          to: { opacity: "1", transform: "translate3d(0, 0, 0)" },
+        },
         "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(30px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "fade-in-scale": {
-          "0%": { opacity: "0", transform: "scale(0.9)" },
-          "100%": { opacity: "1", transform: "scale(1)" },
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" },
-        },
-        "glow": {
-          "0%, 100%": { boxShadow: "0 0 20px rgba(56, 189, 248, 0.3)" },
-          "50%": { boxShadow: "0 0 40px rgba(56, 189, 248, 0.6)" },
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
       },
+
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.6s ease-out",
-        "fade-in-scale": "fade-in-scale 0.5s ease-out",
-        "float": "float 3s ease-in-out infinite",
-        "glow": "glow 2s ease-in-out infinite",
+        "accordion-down": "accordion-down var(--duration-base) var(--ease-out)",
+        "accordion-up": "accordion-up var(--duration-base) var(--ease-out)",
+        "fade-up": "fade-up var(--duration-slow) var(--ease-out) both",
+        "fade-in": "fade-in var(--duration-base) var(--ease-out) both",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;

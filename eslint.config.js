@@ -20,7 +20,24 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      "@typescript-eslint/no-unused-vars": "off",
+
+      /*
+       * Was switched off, which is why dead imports and unused locals had been
+       * accumulating unchallenged. An underscore prefix is the opt-out for the
+       * genuinely-unused-but-required case (e.g. a positional callback arg).
+       */
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "inline-type-imports" },
+      ],
     },
   },
 );

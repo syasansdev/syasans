@@ -2,306 +2,429 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Cursor and Smooth Scrolling */
-@media (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
-  
-  /* Interactive elements with hover effect */
-  a,
-  button,
-  input[type="button"],
-  input[type="submit"],
-  input[type="reset"],
-  [role="button"],
-  [role="tab"] {
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Smooth scroll behavior */
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 5rem; /* Account for fixed header */
-  }
-
-  /* Better focus states */
-  *:focus-visible {
-    outline: 2px solid hsl(221, 83%, 53%);
-    outline-offset: 2px;
-    border-radius: 0.25rem;
-  }
-
-  /* Smooth transitions for interactive elements */
-  a,
-  button,
-  input,
-  textarea,
-  select {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: hsl(0, 0%, 98%);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: hsl(221, 83%, 53%);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(221, 83%, 45%);
-  }
-}
-
-/* Smooth page transitions */
-.page-transition {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Better focus states for keyboard navigation */
-:focus-visible {
-  outline: 2px solid hsl(221, 83%, 53%);
-  outline-offset: 2px;
-  border-radius: 0.25rem;
-}
-
-/* Smooth hover effects for interactive elements */
-a,
-button,
-[role="button"] {
-  position: relative;
-  overflow: hidden;
-}
-
-a::after,
-button::after,
-[role="button"]::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: hsl(221, 83%, 53%);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-a:hover::after,
-button:hover::after,
-[role="button"]:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* ==========================================================================
+   DESIGN TOKENS
+   Single source of truth for colour, elevation, radius and motion.
+   Every value consumed through Tailwind (see tailwind.config.ts) — never
+   hardcode a hex, a shadow or a duration in a component.
+   ========================================================================== */
 
 @layer base {
   :root {
+    /* --- Surfaces ------------------------------------------------------- */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 222 47% 11%;
+
+    --surface: 210 40% 98%;          /* alternating section background      */
+    --surface-strong: 214 32% 95%;   /* deepest neutral used on light theme */
+
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 47% 11%;
+
+    /* --- Brand ---------------------------------------------------------- */
     --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 193 75% 50%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
+    --primary-soft: 214 95% 96%;     /* tinted background for pills/icons   */
+
+    --accent: 193 75% 44%;
+    --accent-foreground: 210 40% 98%;
+    --accent-soft: 190 80% 95%;
+
+    /* --- Neutrals ------------------------------------------------------- */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 45%;
+
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+
+    --success: 142 71% 36%;
+    --success-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --border-strong: 214 25% 84%;
+    --input: 214 32% 91%;
     --ring: 221 83% 53%;
+
+    /* --- Geometry ------------------------------------------------------- */
     --radius: 0.75rem;
 
-    /* Custom gradients for light theme */
-    --gradient-primary: linear-gradient(135deg, hsl(221, 83%, 53%), hsl(193, 75%, 50%));
-    --gradient-secondary: linear-gradient(135deg, hsl(193, 75%, 50%), hsl(221, 83%, 53%));
-    --gradient-hero: linear-gradient(135deg, hsl(221, 83%, 95%), hsl(193, 75%, 95%));
-    --gradient-accent: linear-gradient(135deg, hsl(221, 83%, 53%, 0.1), hsl(193, 75%, 50%, 0.1));
-    
-    /* Glass effect for light theme */
-    --glass-bg: hsla(0, 0%, 100%, 0.7);
-    --glass-border: hsla(221, 83%, 53%, 0.15);
-    
-    /* Shadows */
-    --shadow-glow: 0 0 40px hsla(221, 83%, 53%, 0.2);
-    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    /* --- Elevation ------------------------------------------------------
+       Soft, wide, low-alpha. Premium surfaces read through blur, not black. */
+    --shadow-xs: 0 1px 2px 0 hsl(222 47% 11% / 0.04);
+    --shadow-sm: 0 1px 3px 0 hsl(222 47% 11% / 0.05), 0 1px 2px -1px hsl(222 47% 11% / 0.04);
+    --shadow-md: 0 4px 12px -2px hsl(222 47% 11% / 0.06), 0 2px 6px -2px hsl(222 47% 11% / 0.04);
+    --shadow-lg: 0 12px 28px -6px hsl(222 47% 11% / 0.09), 0 4px 10px -4px hsl(222 47% 11% / 0.05);
+    --shadow-xl: 0 24px 48px -12px hsl(222 47% 11% / 0.13), 0 8px 18px -8px hsl(222 47% 11% / 0.06);
+    --shadow-2xl: 0 40px 80px -20px hsl(222 47% 11% / 0.18), 0 12px 28px -12px hsl(222 47% 11% / 0.08);
+    --shadow-ring: 0 0 0 1px hsl(222 47% 11% / 0.05);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /**
+     * Four stacked layers for the hero frame. Depth in the physical world
+     * comes from a tight contact shadow plus progressively softer, wider
+     * ambient occlusion — a single large blur reads as a smudge, never as an
+     * object resting above a surface.
+     */
+    --shadow-float:
+      0 2px 4px -1px hsl(222 47% 11% / 0.05),
+      0 12px 24px -6px hsl(222 47% 11% / 0.08),
+      0 32px 64px -16px hsl(222 47% 11% / 0.14),
+      0 64px 100px -32px hsl(222 47% 11% / 0.10);
+
+    /* --- Motion ---------------------------------------------------------
+       Four durations, three easings. Nothing else.                        */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
+
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 450ms;
+    --duration-slower: 700ms;
+
+    color-scheme: light;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+
+    --surface: 222 44% 9%;
+    --surface-strong: 222 40% 13%;
+
+    --card: 222 44% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 44% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 62%;
+    --primary-foreground: 222 47% 8%;
+    --primary-soft: 221 60% 16%;
+
+    --accent: 193 82% 55%;
+    --accent-foreground: 222 47% 8%;
+    --accent-soft: 193 60% 15%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 68%;
+
+    --destructive: 0 63% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 64% 48%;
+    --success-foreground: 222 47% 8%;
+
+    --border: 217 33% 20%;
+    --border-strong: 217 28% 28%;
+    --input: 217 33% 20%;
+    --ring: 217 91% 62%;
+
+    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.35), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 12px -2px hsl(0 0% 0% / 0.4), 0 2px 6px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 12px 28px -6px hsl(0 0% 0% / 0.45), 0 4px 10px -4px hsl(0 0% 0% / 0.3);
+    --shadow-xl: 0 24px 48px -12px hsl(0 0% 0% / 0.55), 0 8px 18px -8px hsl(0 0% 0% / 0.35);
+    --shadow-2xl: 0 40px 80px -20px hsl(0 0% 0% / 0.65), 0 12px 28px -12px hsl(0 0% 0% / 0.4);
+    --shadow-ring: 0 0 0 1px hsl(0 0% 100% / 0.06);
+
+    --shadow-float:
+      0 2px 4px -1px hsl(0 0% 0% / 0.4),
+      0 12px 24px -6px hsl(0 0% 0% / 0.45),
+      0 32px 64px -16px hsl(0 0% 0% / 0.55),
+      0 64px 100px -32px hsl(0 0% 0% / 0.45);
+
+    color-scheme: dark;
   }
 }
 
-@layer utilities {
-  /* Glassmorphism for light theme */
-  .glass {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  }
-
-  .glass-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .glass-hover:hover {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(221, 221, 221, 0.5);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Navigation underline effect */
-  .nav-link {
-    position: relative;
-    display: inline-block;
-  }
-
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -4px;
-    left: 50%;
-    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateX(-50%);
-  }
-
-  .nav-link:hover::after {
-    width: 100%;
-  }
-
-  .nav-link.active::after {
-    width: 100%;
-  }
-  
-  /* Gradient Text */
-  .gradient-text {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 700;
-  }
-
-  /* Scroll reveal animation */
-  .scroll-reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .scroll-reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Microinteraction pulse */
-  .micro-pulse {
-    animation: micro-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes micro-pulse {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.8;
-      transform: scale(1.05);
-    }
-  }
-  
-  .parallax-slow {
-    transform: translateZ(0);
-    will-change: transform;
-  }
-
-  /* Chatbot animations */
-  .animate-fadeIn {
-    animation: fadeIn 0.3s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .shadow-3xl {
-    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
-  }
-
-  .shadow-4xl {
-    box-shadow: 0 50px 100px -20px rgba(50, 50, 93, 0.25), 0 30px 60px -30px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Custom high-end animations and grid patterns */
-  .animate-blob-slow {
-    animation: blob-slow 25s infinite ease-in-out;
-  }
-  .animate-blob-medium {
-    animation: blob-slow 18s infinite ease-in-out alternate-reverse;
-  }
-  @keyframes blob-slow {
-    0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-    33% { transform: translate(30px, -50px) scale(1.15) rotate(120deg); }
-    66% { transform: translate(-20px, 30px) scale(0.9) rotate(240deg); }
-    100% { transform: translate(0px, 0px) scale(1) rotate(360deg); }
-  }
-  .bg-grid-pattern {
-    background-size: 50px 50px;
-    background-image: 
-      linear-gradient(to right, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
-  }
-}
-
+/* ==========================================================================
+   BASE
+   ========================================================================== */
 
 @layer base {
   * {
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    /* Clears the fixed header when jumping to an in-page anchor. */
+    scroll-padding-top: 6rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings inherit the display face and optical tightening once, here,
+     so no component has to remember to set tracking. */
+  h1, h2, h3, h4 {
+    @apply font-semibold tracking-tight text-balance;
+  }
+
+  /* Long-form copy stays inside a comfortable measure by default. */
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus: one ring, everywhere, on every input modality.
+     Deliberately NOT inside a pointer media query. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.16);
+    color: hsl(var(--foreground));
+  }
+
+  /* Media never overflows its container. */
+  img, video, svg, canvas {
+    @apply max-w-full;
+  }
+
+  /* Scrollbar — subtle, themed, non-intrusive. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--surface));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border-strong));
+    border: 2px solid hsl(var(--surface));
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.6);
+  }
+}
+
+/* ==========================================================================
+   COMPONENT LAYER
+   Reusable surface treatments. Anything used in more than two places lives
+   here rather than being re-typed as a 20-class string.
+   ========================================================================== */
+
+@layer components {
+  /* Frosted surface used by the header and floating panels. */
+  .glass {
+    background: hsl(var(--background) / 0.72);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-color: hsl(var(--border) / 0.8);
+  }
+
+  /* Brand gradient text — used for the wordmark and key figures only. */
+  .text-gradient {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--primary)),
+      hsl(var(--accent))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Keeps descenders from being clipped by background-clip. */
+    padding-bottom: 0.06em;
+  }
+
+  /* Underline that grows from the centre. Applied intentionally, not to
+     every anchor on the page. */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -0.35rem;
+    height: 2px;
+    width: 0;
+    border-radius: 9999px;
+    transform: translateX(-50%);
+    background-image: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+    transition: width var(--duration-base) var(--ease-out);
+  }
+  .link-underline:hover::after,
+  .link-underline[data-active="true"]::after {
+    width: 100%;
+  }
+
+  /* Ambient section backdrops. Purely decorative — always pointer-events-none
+     and aria-hidden at the call site. */
+  .bg-grid {
+    background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.035) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 55%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 55%, transparent 100%);
+  }
+
+  /* Soft edge fade for horizontally scrolling tracks.
+     Proportional rather than a fixed 6rem: on a 375px viewport a fixed fade
+     eats half the visible width. */
+  .fade-edges-x {
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  /* Hides the scrollbar on deliberately swipeable tracks that ship their own
+     affordances (arrows + progress rail). */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   KEYFRAMES
+   Translate/opacity/scale only — no layout-triggering properties, no
+   rotation on large blurred surfaces.
+   ========================================================================== */
+
+@layer utilities {
+  @keyframes drift {
+    0%,
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+    33%  { transform: translate3d(3%, -6%, 0) scale(1.08); }
+    66%  { transform: translate3d(-3%, 4%, 0) scale(0.95); }
+  }
+
+  @keyframes marquee-x {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
+
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+  }
+
+  /* Hero frame drift. Four pixels over nine seconds — below the threshold at
+     which the eye reads it as animation, above the threshold at which the
+     object reads as pinned to the page. */
+  @keyframes float-y {
+    0%,
+    100% { transform: translate3d(0, 0, 0); }
+    50%  { transform: translate3d(0, -4px, 0); }
+  }
+
+  .animate-float {
+    animation: float-y 9s var(--ease-in-out) infinite;
+  }
+
+  /* Free drift, for the review cards around the hero reel.
+     `float-y` is deliberately imperceptible — it exists to stop the hero frame
+     reading as pinned. This is the opposite brief: the cards are meant to look
+     like they are hanging in the air, so the path wanders on both axes and the
+     amplitude is an order of magnitude larger.
+     Four waypoints rather than two, and no symmetry between them: a two-point
+     keyframe retraces its own path, which the eye reads as a bounce. An
+     asymmetric loop reads as drift.
+     Duration is per-element via `--float-duration`, because the whole effect
+     depends on the cards never sharing a phase — see `FloatingReviews`. */
+  @keyframes float-xy {
+    0%,
+    100% { transform: translate3d(0, 0, 0); }
+    25%  { transform: translate3d(10px, -13px, 0); }
+    50%  { transform: translate3d(-5px, -21px, 0); }
+    75%  { transform: translate3d(-11px, -8px, 0); }
+  }
+
+  .animate-float-xy {
+    animation: float-xy var(--float-duration, 18s) var(--ease-in-out) infinite;
+  }
+
+  /* Content swap inside a floating card.
+     Deliberately not `fade-up`: at 450ms that animation leaves the card
+     standing empty for long enough to be caught mid-swap, and an empty glass
+     panel beside the video reads as a bug rather than a transition. Since the
+     outgoing content is unmounted the instant the key changes, there is
+     nothing to cross-fade against — so the fix is to make the gap too short to
+     register. Opacity is at full by 60% of a 240ms run; only the first frame
+     or two are faint. */
+  @keyframes card-swap {
+    from { opacity: 0; transform: translate3d(0, 5px, 0); }
+    60%  { opacity: 1; }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  .animate-card-swap {
+    animation: card-swap 240ms var(--ease-out) both;
+  }
+
+  /* Decorative ambient blobs. `will-change` is intentionally omitted: these
+     run for the lifetime of the page and promoting them permanently costs
+     more memory than the animation saves. */
+  .animate-drift {
+    animation: drift 26s var(--ease-in-out) infinite;
+  }
+  .animate-drift-slow {
+    animation: drift 38s var(--ease-in-out) infinite alternate;
+  }
+
+  .animate-marquee {
+    animation: marquee-x var(--marquee-duration, 60s) linear infinite;
+  }
+
+  /* Loading placeholder for media whose bytes are still in flight. */
+  .animate-shimmer {
+    animation: shimmer 1.6s linear infinite;
+  }
+  /* Pausing on hover lets a reader actually finish a testimonial. */
+  .marquee-group:hover .animate-marquee,
+  .marquee-group:focus-within .animate-marquee {
+    animation-play-state: paused;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   Honours the OS setting globally so no component has to opt in.
+   Decorative loops stop entirely; functional transitions collapse to
+   near-instant rather than zero, which keeps state changes legible.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-drift,
+  .animate-drift-slow,
+  .animate-marquee,
+  .animate-shimmer,
+  .animate-float,
+  .animate-float-xy {
+    animation: none !important;
   }
 }

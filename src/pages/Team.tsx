@@ -1,259 +1,154 @@
-import { Footer } from "@/components/Footer";
-import { HeroSection } from "@/components/HeroSection";
-import { Navigation } from "@/components/Navigation";
-import { motion } from "framer-motion";
+import { Seo } from "@/components/Seo";
+import { ClosingCta } from "@/components/layout/ClosingCta";
+import { PageHero } from "@/components/layout/PageHero";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { Card } from "@/components/ui/card";
+import { MediaFrame } from "@/components/ui/media-frame";
+import { Reveal, Stagger, StaggerItem } from "@/components/ui/reveal";
+import { Container, Section, SectionHeader } from "@/components/ui/section";
 
 const teamMembers = [
-  {
-    name: "Sankar E",
-    role: "Chairman",
-    image: "/assets/E_Sankar.jpg"
-  },
-  {
-    name: "Youghessh S",
-    role: "Co-Founder & CEO",
-    image: "/assets/Youghessh_S.jpg"
-  },
-  {
-    name: "Devibalan M",
-    role: "Co-Founder & Director",
-    image: "/assets/Devibalan_M.jpg"
-  },
-  {
-    name: "Vishnu Priyan R",
-    role: "Chief Innovation Officer",
-    image: "/assets/Vishnu_Priyan_R.jpg"
-  },
-  {
-    name: "Sakthi Priya G",
-    role: "Culture & Capablity Director",
-    image: "/assets/Sakthi_Priya_G.jpg"
-  },
-  {
-    name: "Kanimozhi D",
-    role: "People Operations Director",
-    image: "/assets/Kanimozhi.jpg"
-  },
-  {
-    name: "Parthiban M",
-    role: "Head - Future Technologies",
-    image: "/assets/Parthiban_M.jpg"
-  },
-  {
-    name: "Nithya Priya G",
-    role: "Capability Manager",
-    image: "/assets/Nithya_Priya_G.jpg"
-  },
-  {
-    name: "Selvaraj",
-    role: "Learning Ecosystem Manager",
-    image: "/assets/Selvaraj.jpeg"
-  },
-  {
-    name: "Gokula Krishnan G",
-    role: "Squad Lead",
-    image: "/assets/Gokula_Krishnan.jpg"
-  },
-  {
-    name: "Geetha V",
-    role: "Head of English (TOEFL, IELTS)",
-    image: "/assets/Geetha_V.jpg"
-  },
-  {
-    name: "Kamala P",
-    role: "Technology Specialist",
-    image: "/assets/Kamala.jpg"
-  },
-  {
-    name: "Vanitha Purushothaman",
-    role: "AI & Technology Strategist",
-    image: "/assets/Vanitha.jpg"
-  },
-  {
-    name: "Suganya S",
-    role: "EdTech Innovation Lead",
-    image: "/assets/Suganya.jpg"
-  }
-
+  { name: "Sankar E", role: "Chairman", image: "/assets/E_Sankar.jpg" },
+  { name: "Youghessh S", role: "Co-Founder & CEO", image: "/assets/Youghessh_S.jpg" },
+  { name: "Devibalan M", role: "Co-Founder & Director", image: "/assets/Devibalan_M.jpg" },
+  { name: "Vishnu Priyan R", role: "Chief Innovation Officer", image: "/assets/Vishnu_Priyan_R.jpg" },
+  { name: "Sakthi Priya G", role: "Culture & Capability Director", image: "/assets/Sakthi_Priya_G.jpg" },
+  { name: "Kanimozhi D", role: "People Operations Director", image: "/assets/Kanimozhi.jpg" },
+  { name: "Parthiban M", role: "Head — Future Technologies", image: "/assets/Parthiban_M.jpg" },
+  { name: "Nithya Priya G", role: "Capability Manager", image: "/assets/Nithya_Priya_G.jpg" },
+  { name: "Selvaraj", role: "Learning Ecosystem Manager", image: "/assets/Selvaraj.jpeg" },
+  { name: "Gokula Krishnan G", role: "Squad Lead", image: "/assets/Gokula_Krishnan.jpg" },
+  { name: "Geetha V", role: "Head of English (TOEFL, IELTS)", image: "/assets/Geetha_V.jpg" },
+  { name: "Kamala P", role: "Technology Specialist", image: "/assets/Kamala.jpg" },
+  { name: "Vanitha Purushothaman", role: "AI & Technology Strategist", image: "/assets/Vanitha.jpg" },
+  { name: "Suganya S", role: "EdTech Innovation Lead", image: "/assets/Suganya.jpg" },
 ];
 
-export default function CoreTeam() {
+const credentials = [
+  "Alumni of NIT, BITS, IIM Trichy, Sathyabama University and MSSW.",
+  "Industry experience from Deloitte, UNICEF, BNP Paribas, Symantec, Bosch, Flextronics, HTC and Electronic Arts.",
+  "Mentors who have cracked SBI, IBPS, SSC, RRB, CAT, TOEFL, GMAT, GATE and BEC.",
+  "Expert coders across AI, augmented reality, UI/UX, blockchain, full-stack and big data.",
+  "On average, each mentor has oriented 25,000+ students across India on domain-specific modules.",
+];
+
+export default function Team() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/5 flex flex-col">
-      <Navigation />
-      <main className="flex-grow pt-20">
-        {/* Hero Section */}
-        <HeroSection
-          title="The Brains of"
-          highlight="SYASAN'S"
-          tag="OUR TEAM"
-          subtitle="SYASAN'S - PROPELLED BY PROFESSIONALS, MENTORED BY MASTERS"
-        />
+    <PageLayout>
+      <Seo
+        title="Core team — Syasan's Career Analytics"
+        description="Meet the academicians, industry experts and mentors behind Syasan's Career Analytics."
+      />
 
-        {/* Core Team Section */}
-        <section className="py-12 bg-gradient-to-b from-background to-muted/5">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <span className="inline-block text-primary font-medium mb-3 text-sm uppercase tracking-wider">Our Experts</span>
-              <h2 className="text-3xl font-bold mb-4">
-                Meet Our Core Team
-              </h2>
-              <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
-              <p className="text-muted-foreground max-w-3xl mx-auto">
-                A team of passionate professionals dedicated to excellence and innovation.
-              </p>
-            </div>
+      <PageHero
+        title="The brains of"
+        highlight="Syasan's"
+        description="Propelled by professionals, mentored by masters — a team of academicians and industry practitioners behind every programme."
+      />
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-              {teamMembers.map((member, index) => (
-                <div
-                  key={index}
-                  className="group relative bg-card rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-border/30 hover:border-primary/20"
-                >
-                  <div className="relative w-full aspect-[3/4] overflow-hidden">
+      {/* Roster */}
+      <Section tone="default" aria-labelledby="team-heading">
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="team-heading"
+            title="Meet the core team"
+            description="Fourteen people accountable for what happens in every classroom, lab and dashboard."
+          />
+
+          <Stagger
+            step={0.04}
+            className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          >
+            {teamMembers.map(({ name, role, image }) => (
+              <StaggerItem key={name}>
+                <Card interactive className="group h-full overflow-hidden">
+                  <div className="aspect-[3/4] overflow-hidden bg-surface-strong">
                     <img
-                      src={member.image}
-                      alt={member.name}
-                      width={250}
-                      height={333}
-                      className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                      src={image}
+                      alt={`${name}, ${role}`}
+                      width={300}
+                      height={400}
                       loading="lazy"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33.33vw, 20vw"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
+                      decoding="async"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="h-full w-full object-cover object-top transition-transform duration-slower ease-out group-hover:scale-[1.04]"
+                      onError={(event) => {
+                        const target = event.currentTarget;
                         target.onerror = null;
-                        target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random`;
+                        target.src = `https://ui-avatars.com/api/?background=random&name=${encodeURIComponent(name)}`;
                       }}
                     />
                   </div>
-                  <div className="p-3 text-center">
-                    <h3 className="text-sm font-semibold text-foreground line-clamp-1">{member.name}</h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{member.role}</p>
+                  <div className="p-4 text-center">
+                    <h3 className="text-caption font-semibold text-foreground">{name}</h3>
+                    <p className="mt-0.5 text-micro leading-snug text-muted-foreground">
+                      {role}
+                    </p>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                </Card>
+              </StaggerItem>
+            ))}
+          </Stagger>
 
-        {/* Team Group Photo */}
-        <div className="container mx-auto px-6 py-12 max-w-5xl">
-          <div className="relative w-full aspect-video max-w-5xl mx-auto rounded-xl overflow-hidden shadow-xl">
-            <img
-              src="/assets/Group_Photo.jpeg"
-              alt="SYASAN'S Team Group Photo"
-              className="w-full h-full object-cover"
-              width={1200}
-              height={675}
-              loading="lazy"
-              sizes="(max-width: 768px) 100vw, 80vw"
-            />
-          </div>
-        </div>
-
-        {/* Testimonial Section */}
-        <section className="py-16 bg-gradient-to-b from-muted/5 to-background">
-          <div className="container mx-auto px-6">
-            <div className="bg-card p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-border/30">
-              <blockquote className="text-xl italic text-muted-foreground text-center">
-                "I appreciate SYASAN'S by Virtue of Having Quality Academicians and providing talents of highest calibre to various organizations Pan-India"
-                <footer className="mt-4 font-semibold text-foreground">
-                  — Min. of Higher Education 2018
-                </footer>
-              </blockquote>
-            </div>
-          </div>
-        </section>
-
-        {/* SYASANITES Section */}
-        <section className="relative py-24 overflow-hidden bg-gradient-to-br from-background via-background to-muted/10">
-          {/* Animated background elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0dGVybiBpZD0icGF0dGVybi1iYXNlIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFucm9ybT0icm90YXRlKDEzNSkiPjxyZWN0IGlkPSJwYXR0ZXJuLWJnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJvaWx2ZXJjaGlkZSI+PC9yZWN0PjxyZWN0IGlkPSJwYXR0ZXJuLWZvcmVncm91bmQiIHg9IjAiIHk9IjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAyKSIgZmlsbC1ydWxlPSJldmVub2RkIj48L3JlY3Q+PC9wYXR0ZXJuPjxyZWN0IGlkPSJwYXR0ZXJuLXN2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuLWJhc2UpIiBvcGFjaXR5PSIwLjEiPjwvcmVjdD48L3N2Zz4=')] opacity-10"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5"></div>
-            <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-            <div className="absolute -left-20 -bottom-20 w-72 h-72 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
-          </div>
-
-          <div className="container mx-auto px-6 relative z-10">
-            <motion.div
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <motion.span
-                className="text-primary font-medium mb-3 text-sm uppercase tracking-wider inline-block"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-              >
-                Our Community
-              </motion.span>
-              <motion.h2
-                className="text-3xl font-bold mb-4"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-              >
-                SYASANITES ARE
-              </motion.h2>
-              <motion.div
-                className="w-20 h-1 bg-primary mx-auto mb-6"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+          <Reveal variant="scale-in">
+            <MediaFrame className="mx-auto max-w-4xl">
+              <img
+                src="/assets/Group_Photo.jpeg"
+                alt="The Syasan's Career Analytics team"
+                width={1200}
+                height={675}
+                loading="lazy"
+                decoding="async"
+                className="aspect-video w-full object-cover"
               />
-            </motion.div>
+            </MediaFrame>
+          </Reveal>
+        </Container>
+      </Section>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[
-                "Alumni of prestigious institutions like NIT, BITS, IIM(Trichy), Sathyabama University & MSSW",
-                "Industry Experts carrying professional experience from Deloitte, UNICEF, BNP Paribas, Symantec, Bosch, Flextronics, HTC, Electronic Arts & many more",
-                "Mentors with excellent track record - Cracked SBI, IBPS, SSC, RRB, CAT, TOEFL, GMAT, GATE & BEC Exams",
-                "Expert Coders with immense knowledge in AI, Augmented Reality, UI/UX, Block Chain, Full Stack & BIG Data",
-                "On Average each Mentor have oriented about 25000+ students across geographies of INDIA on various domain specific modules"
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.1,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                  whileHover={{
-                    y: -5,
-                    transition: { duration: 0.2 }
-                  }}
-                  className="relative group"
-                >
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-primary/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-                  <div className="relative h-full bg-card/80 backdrop-blur-sm p-6 rounded-xl border border-border/50 hover:border-primary/30 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-primary/5">
-                    <div className="flex items-start space-x-4">
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-3 h-3 rounded-full bg-primary/80 group-hover:bg-primary transition-colors duration-300"></div>
-                      </div>
-                      <p className="text-muted-foreground group-hover:text-foreground transition-colors duration-300">{item}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+      {/* Endorsement quote */}
+      <Section tone="surface" size="sm">
+        <Container width="narrow">
+          <Reveal>
+            <figure className="rounded-3xl border border-border bg-card p-8 text-center shadow-sm sm:p-10">
+              <blockquote className="text-lead italic text-foreground">
+                &ldquo;I appreciate SYASAN&rsquo;S by virtue of having quality academicians and
+                providing talents of the highest calibre to various organizations pan-India.&rdquo;
+              </blockquote>
+              <figcaption className="mt-6 text-caption font-semibold text-muted-foreground">
+                &mdash; Ministry of Higher Education, 2018
+              </figcaption>
+            </figure>
+          </Reveal>
+        </Container>
+      </Section>
 
-          {/* Decorative elements */}
-          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
-        </section>
+      {/* Who Syasanites are */}
+      <Section tone="default" aria-labelledby="syasanites-heading">
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="syasanites-heading"
+            title="Syasanites are"
+            description="The background every mentor brings into the room."
+          />
 
-      </main>
-      <Footer />
-    </div>
+          <Stagger className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {credentials.map((item) => (
+              <StaggerItem key={item}>
+                <Card elevation="flat" className="flex h-full gap-3.5 bg-surface p-5">
+                  <span aria-hidden className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                  <p className="text-caption leading-relaxed text-muted-foreground">{item}</p>
+                </Card>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </Container>
+      </Section>
+
+      <ClosingCta
+        title="Talk to the people who'd run your programme"
+        description="No sales layer. You speak to the mentors and capability leads who'd be in the room."
+      />
+    </PageLayout>
   );
 }

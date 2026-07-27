@@ -3,36 +3,64 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-    <title>Syasan's - Crafting Your Career to Excellence</title>
-    <meta name="description" content="Transform your career with expert training, mentorship, and placement support. Join 10,000+ professionals who achieved success with Syasan's Career Analytics." />
-    <meta name="author" content="Syasan's" />
-    <meta property="og:title" content="Syasan's - Career Analytics & Training" />
-    <meta property="og:description" content="Expert career training, mentorship, and placement support with 95% success rate" />
-    <meta property="og:type" content="website" />
-    <!-- Favicon -->
+
+    <!--
+      Applies the stored theme before first paint. Without this the page
+      always paints light and then snaps to dark, which is worse than having
+      no dark mode at all. Inline and synchronous by necessity — it must run
+      before the browser paints.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("syasans-theme");
+          var dark =
+            stored === "dark" ||
+            (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (e) {
+          /* Private mode or blocked storage: fall through to the light theme. */
+        }
+      })();
+    </script>
+
+    <title>Syasan's Career Analytics — AI-integrated Industry 5.0 learning ecosystem</title>
+    <meta
+      name="description"
+      content="Tamil Nadu's largest AI-integrated Industry 5.0 learning ecosystem. Assessment-led employability training, mentoring and placement analytics for institutions and their students."
+    />
+    <meta name="author" content="Syasan's Career Analytics" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Fonts. Trimmed from nine weights to six: every unused weight is a
+         separate render-blocking file for glyphs no element requests. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- The hero's poster frame is the LCP candidate; warming the connection
+         here saves a DNS + TLS round trip on it. -->
+    <link rel="preconnect" href="https://i.ytimg.com" crossorigin />
+
     <link rel="icon" type="image/png" href="/assets/Logo.png" />
-    
-    <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/Logo.png" />
-    
-    <!-- Android/Chrome -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/Logo.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/Logo.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/Logo.png" />
-    
-    <!-- Microsoft Tiles -->
+
     <meta name="msapplication-TileImage" content="/assets/Logo.png" />
     <meta name="msapplication-TileColor" content="#ffffff" />
-    
-    <!-- Theme Color for Mobile Browsers -->
-    <meta name="theme-color" content="#ffffff" />
+
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0f1c" media="(prefers-color-scheme: dark)" />
   </head>
 
   <body>
     <div id="root"></div>
+    <noscript>
+      This site needs JavaScript enabled. Reach us directly at
+      <a href="mailto:askus@syasans.com">askus@syasans.com</a>.
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

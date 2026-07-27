@@ -1,415 +1,240 @@
-import { motion } from "framer-motion";
-import { Navigation } from "@/components/Navigation";
-import { Footer } from "@/components/Footer";
-import { Award, Check, CheckCircle, Clock, Cpu, Database, Server, Shield, Users, Zap } from "lucide-react";
+import {
+  Award,
+  Check,
+  Cpu,
+  Server,
+  Shield,
+  Users,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+
+import { ClosingCta } from "@/components/layout/ClosingCta";
+import { PageHero } from "@/components/layout/PageHero";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { CodeKrackCard } from "@/components/products/CodeKrackCard";
+import { Seo } from "@/components/Seo";
+import { Card } from "@/components/ui/card";
+import { IconTile } from "@/components/ui/icon-tile";
+import { MediaFrame } from "@/components/ui/media-frame";
+import { Reveal, Stagger, StaggerItem } from "@/components/ui/reveal";
+import {
+  AmbientBackdrop,
+  Container,
+  Section,
+  SectionHeader,
+} from "@/components/ui/section";
 import QuantumServerImage from "@/assets/Quantum_Server.jpg";
 
-const Products = () => {
+type Highlight = { title: string; description: string; icon: LucideIcon };
+
+const quantumHighlights: Highlight[] = [
+  {
+    title: "Real-time assessment",
+    description:
+      "Instant feedback and detailed analytics the moment a candidate submits, rather than a report a fortnight later.",
+    icon: Zap,
+  },
+  {
+    title: "Built for the whole campus",
+    description:
+      "Thousands of candidates can sit the same paper simultaneously without the engine slowing down or dropping a submission.",
+    icon: Server,
+  },
+  {
+    title: "Secure and private",
+    description:
+      "Candidate data is encrypted in transit and at rest, with access scoped to the institution that owns it.",
+    icon: Shield,
+  },
+];
+
+const mobileLabFeatures: Highlight[] = [
+  {
+    title: "Reaches the last mile",
+    description:
+      "Villages and small towns that no training provider services, on a route planned with the district administration.",
+    icon: Users,
+  },
+  {
+    title: "A working lab on board",
+    description:
+      "Local servers, coding sandboxes and interactive displays — the same environment as a campus lab, parked in the village.",
+    icon: Cpu,
+  },
+  {
+    title: "Government endorsed",
+    description:
+      "Run as a flagship skill development project with the Ministry of Rural Industries, Government of Tamil Nadu.",
+    icon: Award,
+  },
+];
+
+const handbookFeatures = [
+  "Customised handbook for aspirants targeting campus placements",
+  "400+ core concepts with examples, twists, tricks, choices and diluted solutions",
+  "Graded problems with lateral solutions focused on dream and super-dream offers",
+  "Exam focus: Bank PO, UPSC, GATE, CAT, TANSET and TNPSC",
+  "Industry 5.0 specific concepts for quantitative, reasoning and logical ability",
+  "3,500+ actual questions with answers",
+];
+
+/** Shared icon + copy row used by both product sections. */
+const HighlightList = ({ items }: { items: Highlight[] }) => (
+  <Stagger className="flex flex-col gap-6" step={0.08}>
+    {items.map(({ title, description, icon: Icon }) => (
+      <StaggerItem key={title} className="flex gap-4">
+        <IconTile icon={<Icon />} />
+        <div>
+          <h3 className="text-h4 text-foreground">{title}</h3>
+          <p className="mt-1.5 max-w-measure-sm text-caption leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        </div>
+      </StaggerItem>
+    ))}
+  </Stagger>
+);
+
+export default function Products() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
+    <PageLayout>
+      <Seo
+        title="Products — CodeKrack, D'LAN Quantum Server & the Mobile Training Institute"
+        description="CodeKrack, our coding practice platform; the D'LAN Quantum Server assessment engine; India's first Mobile Training Institute under the Rural Connect Programme; and handcrafted aptitude material for institutions."
+      />
 
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="pt-32 pb-20 bg-gradient-to-br from-blue-50 to-white">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="text-gray-900">Our </span>
-                <span className="text-blue-600">Products</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Innovative solutions designed to transform your career and learning experience
-              </p>
-            </div>
+      <PageHero
+        title="Built to measure"
+        highlight="capability at scale"
+        description="A coding platform, an assessment engine, a mobile laboratory and the material that runs on all three."
+      />
+
+      {/* CodeKrack — the one product a visitor can use immediately, so it
+          leads. */}
+      <CodeKrackCard />
+
+      {/* Quantum Server */}
+      <Section tone="surface" aria-labelledby="quantum-heading">
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="quantum-heading"
+            title="D'LAN Quantum Server"
+            description="One test engine, sat by a whole campus at once, scored as it happens."
+          />
+
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <Reveal variant="scale-in">
+              <MediaFrame>
+                <img
+                  src={QuantumServerImage}
+                  alt="The D'LAN Quantum Server hardware"
+                  width={840}
+                  height={630}
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              </MediaFrame>
+            </Reveal>
+
+            <HighlightList items={quantumHighlights} />
           </div>
-        </section>
+        </Container>
+      </Section>
 
-        {/* D'LAN QUANTUM SERVER */}
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="max-w-4xl mx-auto text-center mb-16"
-            >
-              <div className="inline-block px-4 py-1 bg-blue-100 text-blue-600 text-sm font-medium rounded-full mb-4">
-                Advanced Assessment
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">D'LAN <span className="text-blue-600">QUANTUM SERVER</span></h2>
-              <p className="text-xl text-gray-600">
-                Comprehensive evaluation with our advanced test engine
-              </p>
-            </motion.div>
+      {/* Mobile Training Institute */}
+      <Section tone="default" aria-labelledby="mobile-heading">
+        <AmbientBackdrop />
 
-            <div className="grid md:grid-cols-2 gap-12 items-start">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="relative group flex justify-center w-full"
-              >
-                <div className="relative overflow-hidden rounded-2xl shadow-2xl group-hover:shadow-3xl transition-all duration-500 w-full max-w-[420px] border-4 border-white dark:border-gray-800">
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={QuantumServerImage}
-                      alt="D'LAN Quantum Server"
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 className="text-xl font-bold text-white mb-1">Quantum Computing Power</h3>
-                        <p className="text-sm text-gray-200">Next-generation server technology</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 border-2 border-white/20 rounded-xl pointer-events-none group-hover:border-blue-400/30 transition-all duration-500"></div>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </div>
-              </motion.div>
-              <div className="space-y-8 flex flex-col items-center md:items-start text-center md:text-left">
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <Zap className="w-6 h-6 text-blue-600" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">Real-time Assessment</h3>
-                      <p className="text-gray-600">
-                        Experience our cutting-edge assessment platform that provides instant feedback and detailed analytics.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="mobile-heading"
+            title="Mobile Training Institute"
+            description="India's first mobile training institute, run with the Ministry of Rural Industries, Government of Tamil Nadu."
+          />
 
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <Server className="w-6 h-6 text-blue-600" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">Robust Infrastructure</h3>
-                      <p className="text-gray-600">
-                        Built on enterprise-grade technology to ensure reliability and performance at scale.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <div className="flex flex-col gap-8">
+              <Reveal>
+                <p className="max-w-measure text-lead text-foreground">
+                  Rural students should not have to travel to reach a computer lab, so the lab
+                  travels instead &mdash; carrying career coaching, computational facilities and
+                  employability programmes to where the students already are.
+                </p>
+              </Reveal>
 
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <Shield className="w-6 h-6 text-blue-600" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-semibold mb-2">Secure & Private</h3>
-                      <p className="text-gray-600">
-                        Your data security is our top priority with enterprise-grade encryption and compliance.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <HighlightList items={mobileLabFeatures} />
             </div>
+
+            <Reveal variant="scale-in" className="lg:order-first">
+              <MediaFrame>
+                <img
+                  src="/assets/mobile.jpg"
+                  alt="The Syasan's mobile training laboratory vehicle"
+                  width={1000}
+                  height={750}
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              </MediaFrame>
+            </Reveal>
           </div>
-        </section>
+        </Container>
+      </Section>
 
-        {/* MOBILE TRAINING INSTITUTE */}
-        <section className="py-20 bg-gray-50/50">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="max-w-4xl mx-auto text-center mb-16"
-            >
+      {/* Aptitude handbooks */}
+      <Section tone="surface" aria-labelledby="handbook-heading">
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="handbook-heading"
+            title="Handcrafted aptitude for institutions"
+            description="Customised material that raises aptitude scores for campus placements and competitive exams."
+          />
 
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                MOBILE <span className="text-blue-600">TRAINING INSTITUTE</span>
-              </h2>
-              <p className="text-xl text-gray-600">
-                India's First Mobile Training Institute under the Rural Connect Program
-              </p>
-            </motion.div>
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <Reveal variant="scale-in">
+              <MediaFrame>
+                <img
+                  src="/assets/Books.jpg"
+                  alt="Syasan's printed aptitude handbooks"
+                  width={840}
+                  height={630}
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/3] w-full object-cover"
+                />
+              </MediaFrame>
+            </Reveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              {/* Content side (Left on desktop) */}
-              <div className="lg:col-span-7 space-y-8 order-2 lg:order-1 text-center lg:text-left">
-                <div className="space-y-4">
-                  <p className="text-xl leading-relaxed text-gray-800 font-semibold">
-                    India’s First Mobile Training Institute by Syasan’s Career Analytics under the Rural Connect Program, Ministry of Rural Industries, Government of Tamil Nadu.
-                  </p>
-                  <p className="text-base leading-relaxed text-gray-600">
-                    A pioneering initiative designed to bridge the digital divide. We bring top-tier career coaching, computational laboratories, and employability readiness programs directly to rural regions using state-of-the-art mobile learning labs.
-                  </p>
-                </div>
-
-                <div className="space-y-6 bg-white p-8 rounded-3xl border border-gray-100 shadow-sm shadow-slate-100/50 text-left">
-                  <h3 className="text-2xl font-extrabold text-gray-900 mb-6">Program Features</h3>
-                  <ul className="space-y-6">
-                    <li className="flex items-start">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mr-4">
-                        <Users className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-bold text-gray-800">Rural Connectivity</h4>
-                        <p className="text-sm text-gray-600 mt-1">Empowering rural youth by offering high-tech education and software diagnostics directly in their villages.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mr-4">
-                        <Cpu className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-bold text-gray-800">State-of-the-Art Labs</h4>
-                        <p className="text-sm text-gray-600 mt-1">Equipped with local server systems, coding sandboxes, digital aids, and interactive visual displays.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mr-4">
-                        <Award className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-bold text-gray-800">Government Endorsed</h4>
-                        <p className="text-sm text-gray-600 mt-1">Executed as a flagship skill development project in close coordination with the Ministry of Rural Industries, Government of Tamil Nadu.</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* Image side (Right on desktop) */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="lg:col-span-5 relative group flex justify-center w-full order-1 lg:order-2"
-              >
-                <div className="relative overflow-hidden rounded-3xl shadow-3xl group-hover:shadow-4xl transition-all duration-500 w-full max-w-[500px] border-8 border-white dark:border-gray-800">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
-                    <img
-                      src="/assets/mobile.png"
-                      alt="Mobile Training Institute Bus"
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 className="text-xl font-bold text-white mb-1">Mobile Training Lab</h3>
-                        <p className="text-sm text-gray-200">Flagship Skill Development Vehicle</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 border-2 border-white/20 rounded-2xl pointer-events-none group-hover:border-blue-400/30 transition-all duration-500"></div>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Handcrafting Aptitude Section */}
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="max-w-4xl mx-auto text-center mb-16"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Handcrafting Aptitude for <span className="text-blue-600">Institutions</span>
-              </h2>
-              <p className="text-xl text-gray-600">
-                Customized learning solutions to enhance aptitude skills for campus placements and competitive exams
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-12 items-start">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="relative group flex justify-center w-full h-full"
-              >
-                <div className="relative w-full max-w-[420px] h-full flex flex-col justify-center">
-                  <div className="relative overflow-hidden rounded-2xl shadow-2xl group-hover:shadow-3xl transition-all duration-500 border-4 border-white dark:border-gray-800 h-full flex flex-col">
-                    {/* Main Image Container - Now flexible height */}
-                    <div className="relative flex-grow overflow-hidden bg-gray-100">
-                      <img
-                        src="/assets/Books.jpg"
-                        alt="Handcrafting Aptitude Materials"
-                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+            <Reveal>
+              <Card className="p-8 sm:p-10">
+                <h3 className="text-h3 text-foreground">What&rsquo;s inside</h3>
+                <ul className="mt-6 flex flex-col gap-4">
+                  {handbookFeatures.map((feature) => (
+                    <li key={feature} className="flex gap-3">
+                      <Check
+                        aria-hidden
+                        className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                        strokeWidth={1.75}
                       />
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
-                        <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                          <h3 className="text-xl font-bold text-white mb-1">Comprehensive Materials</h3>
-                          <p className="text-sm text-gray-200">Expertly crafted for success</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Decorative Frame Elements */}
-                    <div className="absolute inset-0 border-2 border-white/30 rounded-xl pointer-events-none group-hover:border-blue-400/40 transition-all duration-500"></div>
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                    {/* Corner Accents */}
-                    <div className="absolute -top-1 -left-1 w-8 h-8 border-t-2 border-l-2 border-blue-500 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="absolute -top-1 -right-1 w-8 h-8 border-t-2 border-r-2 border-blue-500 rounded-tr-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="absolute -bottom-1 -left-1 w-8 h-8 border-b-2 border-l-2 border-blue-500 rounded-bl-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-2 border-r-2 border-blue-500 rounded-br-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  </div>
-
-                  {/* Subtle Drop Shadow */}
-                  <div className="absolute -bottom-4 -right-4 w-full h-full bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-2xl -z-10 group-hover:opacity-70 opacity-0 transition-all duration-500"></div>
-                </div>
-              </motion.div>
-              <div className="space-y-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">Key Features</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start p-3 hover:bg-blue-50 rounded-lg transition-colors">
-                    <CheckCircle className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">Customized Hand-book for aspirants targeting Campus Placements</span>
-                  </li>
-                  <li className="flex items-start p-3 hover:bg-blue-50 rounded-lg transition-colors">
-                    <CheckCircle className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">400+ core concepts with examples, twists, tricks, choices & diluted solution</span>
-                  </li>
-                  <li className="flex items-start p-3 hover:bg-blue-50 rounded-lg transition-colors">
-                    <CheckCircle className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">Graded problems with lateral solution focusing on the Dreams & Super Dream offers</span>
-                  </li>
-                  <li className="flex items-start p-3 hover:bg-blue-50 rounded-lg transition-colors">
-                    <CheckCircle className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">Exam Focus: Bank PO, UPSC, GATE, CAT, TANSET, TNPSC</span>
-                  </li>
-                  <li className="flex items-start p-3 hover:bg-blue-50 rounded-lg transition-colors">
-                    <CheckCircle className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">Industry 5.0 specific concepts for Quantitative, Reasoning and Logical Ability</span>
-                  </li>
-                  <li className="flex items-start p-3 hover:bg-blue-50 rounded-lg transition-colors">
-                    <CheckCircle className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">3500+ Actual Questions with Answers</span>
-                  </li>
+                      <span className="text-caption leading-relaxed text-muted-foreground">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
-              </div>
-            </div>
+              </Card>
+            </Reveal>
           </div>
-        </section>
+        </Container>
+      </Section>
 
-        {/* Enhanced Features Section */}
-        <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
-          <div className="container mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              className="max-w-5xl mx-auto text-center mb-20"
-            >
-              <span className="inline-block px-4 py-1.5 bg-blue-100 text-blue-600 text-sm font-medium rounded-full mb-4">
-                Why Choose Us
-              </span>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Powerful Features for <span className="text-blue-600">Optimal Performance</span>
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Everything you need to assess, analyze, and improve your learning experience
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {[
-                {
-                  icon: <Cpu className="w-6 h-6" />,
-                  title: "Advanced Analytics",
-                  description: "Gain deep insights with our comprehensive analytics dashboard that tracks progress and performance metrics.",
-                  color: "from-blue-500 to-blue-400"
-                },
-                {
-                  icon: <Users className="w-6 h-6" />,
-                  title: "Expert Guidance",
-                  description: "Learn from industry professionals with years of experience in aptitude training and career counseling.",
-                  color: "from-emerald-500 to-emerald-400"
-                },
-                {
-                  icon: <Database className="w-6 h-6" />,
-                  title: "Comprehensive Content",
-                  description: "Access a vast library of practice questions, mock tests, and study materials.",
-                  color: "from-purple-500 to-purple-400"
-                },
-                {
-                  icon: <Clock className="w-6 h-6" />,
-                  title: "24/7 Support",
-                  description: "Get your questions answered with our round-the-clock support team.",
-                  color: "from-amber-500 to-amber-400"
-                },
-                {
-                  icon: <Check className="w-6 h-6" />,
-                  title: "Proven Results",
-                  description: "Join thousands of successful candidates who aced their exams with our guidance.",
-                  color: "from-rose-500 to-rose-400"
-                },
-                {
-                  icon: <Award className="w-6 h-6" />,
-                  title: "Certification Ready",
-                  description: "Prepare effectively for industry-recognized certifications and competitive exams.",
-                  color: "from-indigo-500 to-indigo-400"
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  whileHover={{ y: -5 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{
-                    duration: 0.4,
-                    delay: index * 0.05,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  className="group relative overflow-hidden bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-                >
-                  <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${feature.color}`}></div>
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} text-white flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="mt-16 text-center"
-            >
-
-            </motion.div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+      <ClosingCta
+        title="Put these to work on your campus"
+        description="Assessment engine, mobile lab or course material — tell us what your cohort needs and we'll scope it."
+      />
+    </PageLayout>
   );
-};
-
-export default Products;
+}

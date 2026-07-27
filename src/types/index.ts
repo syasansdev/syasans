@@ -1,5 +1,5 @@
-import { LucideProps } from 'lucide-react';
-import { ComponentType } from 'react';
+import { type LucideProps } from 'lucide-react';
+import { type ComponentType } from 'react';
 
 export interface Milestone {
   year: string;

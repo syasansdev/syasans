@@ -1,344 +1,293 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Minimize2, Maximize2, X } from 'lucide-react';
-import syasansLogo from '@/assets/syasans-logo.png';
+import { Bot, Send, X } from "lucide-react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 
-interface Message {
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  buildSystemPrompt,
+  greeting,
+  offlineReplies,
+  outOfScopeReply,
+} from "@/config/assistant";
+import { contact } from "@/config/site";
+import { cn } from "@/lib/utils";
+import logo from "@/assets/syasans-logo.png";
+
+type Message = {
   id: string;
   text: string;
-  sender: 'user' | 'bot';
-  timestamp: Date;
-}
+  sender: "user" | "bot";
+};
 
-const COMPANY_INFO = `
-Syasan's Vision is a leading career analytics and training institution with comprehensive details:
+/**
+ * The assistant.
+ *
+ * Rebuilt for accessibility and for the design system:
+ *  - It is a real labelled dialog. Previously it was an unlabelled `<div>`
+ *    with no dialog semantics, no Escape handler and no focus management, so
+ *    a keyboard user could open it and then have no idea where they were.
+ *  - The transcript is a live region, so new replies are announced.
+ *  - `onKeyPress` (deprecated, and skipped by some IMEs) is replaced by a
+ *    real `<form>` submit, which also gives Enter-to-send for free.
+ *  - Colours, radii and elevation come from tokens, so it now matches the
+ *    rest of the product and works in dark mode.
+ */
+const GREETING: Message = { id: "greeting", text: greeting, sender: "bot" };
 
-**About Us:**
-- Name: Syasan's Vision / Crystal Syasan's Vision
-- Experience: 9+ years in professional training and development
-- Focus: Career analytics solutions and professional development programs
+/** Conversation openers, so the panel is never a blank prompt. */
+const STARTERS = [
+  "What programmes do you offer?",
+  "How does a training engagement work?",
+  "What placement support is included?",
+];
 
-**Key Statistics:**
-- Students Trained: 250K+
-- Expert Mentors: 100+
-- Corporate Clients: 50+
-- Training Batches: 5K+
-- Rating: 4.5/5.0 (based on 88K reviews)
-- Project Success Rate: 99%
-- Client Retention: 94%
-- Training Hours: 30K+
-- Learning Centers: 20+
-- Pool Drives: 50+
-- MoU's: 30+
-- Career Success Rate: 89%
+/**
+ * Only the last few turns are sent upstream. Enough for the assistant to
+ * follow up coherently, bounded so a long conversation cannot grow the request
+ * without limit.
+ */
+const HISTORY_TURNS = 8;
 
-**Services Offered:**
-- Professional career development programs
-- Industry-expert designed training
-- Career analytics solutions
-- Corporate training programs
-- Student development programs
-- Placement assistance
-- Skill development workshops
-
-**Contact Information:**
-- Multiple learning centers available
-- Strong industry partnerships
-- Comprehensive support system
-- Professional mentorship available
-
-**Mission:**
-To transform careers through expert training programs designed by industry professionals, helping students and professionals achieve their goals and excel in their chosen fields.
-
-**Values:**
-- Professional excellence
-- Student success focus
-- Industry-relevant curriculum
-- Expert mentorship
-- High-quality training delivery
-`;
-
-const ChatBot: React.FC = () => {
+const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: "Hello! I'm here to help. Ask me anything about Syasan's Vision or I can assist with general questions too.",
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
-  const [inputText, setInputText] = useState('');
+  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const titleId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const transcriptEndRef = useRef<HTMLDivElement>(null);
 
+  // Escape closes and hands focus back to the launcher.
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!isOpen) return;
 
-  const generateBotResponse = async (userMessage: string): Promise<string> => {
-    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-    
-    console.log('API Key available:', !!apiKey);
-    console.log('API Key length:', apiKey?.length);
-    
-    if (!apiKey) {
-      return "I apologize, but I'm currently unable to connect to my AI services. You can still ask me questions about Syasan's Vision using my built-in knowledge!";
-    }
-
-    try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a helpful assistant for Syasan's Vision. Keep responses concise and helpful. Use this company information when relevant: ${COMPANY_INFO}. Focus on answering user questions directly without adding promotional content unless specifically asked about the company.`
-            },
-            {
-              role: 'user',
-              content: userMessage
-            }
-          ],
-          temperature: 1,
-          max_tokens: 1024,
-          top_p: 1,
-          stream: false
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Response Error:', response.status, errorText);
-        throw new Error(`API request failed: ${response.status} ${errorText}`);
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        triggerRef.current?.focus();
       }
-
-      const data = await response.json();
-      console.log('API Response:', data);
-      return data.choices[0]?.message?.content || "I apologize, but I couldn't process your request. Please try again.";
-    } catch (error) {
-      console.error('Chatbot API Error:', error);
-      // Fallback to basic responses if API fails
-      const lowerMessage = userMessage.toLowerCase();
-      
-      if (lowerMessage.includes('course') || lowerMessage.includes('training')) {
-        return "We offer comprehensive professional training programs designed by industry experts. Our programs cover various fields with a 99% success rate and have trained over 250K students. Would you like to know more about specific programs?";
-      }
-      
-      if (lowerMessage.includes('placement') || lowerMessage.includes('job')) {
-        return "Our placement assistance program has an 89% career success rate with 50+ pool drives and strong industry connections. We provide comprehensive support to help you achieve your career goals.";
-      }
-      
-      if (lowerMessage.includes('contact') || lowerMessage.includes('address')) {
-        return "We have 20+ learning centers available. For specific location details and contact information, please visit our contact page or reach out through our inquiry form.";
-      }
-      
-      if (lowerMessage.includes('fee') || lowerMessage.includes('cost')) {
-        return "For detailed fee information, I recommend contacting our admissions team through the inquiry form. They can provide you with current pricing and available payment options.";
-      }
-      
-      return "I apologize, but I'm having trouble connecting to my AI services. However, I can tell you that Syasan's Vision has 9+ years of experience, 250K+ trained students, and a 99% project success rate. Feel free to ask me about our programs, placement assistance, or general information!";
-    }
-  };
-
-  const handleSendMessage = async () => {
-    if (!inputText.trim()) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputText,
-      sender: 'user',
-      timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputText('');
-    setIsTyping(true);
+    window.addEventListener("keydown", onKeyDown);
+    inputRef.current?.focus();
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen]);
+
+  useEffect(() => {
+    transcriptEndRef.current?.scrollIntoView({ block: "nearest" });
+  }, [messages, isTyping]);
+
+  /**
+   * Offline answers.
+   *
+   * Used when no key is configured or the request fails. They never assert
+   * anything commercial — fee, schedule and eligibility questions are routed
+   * to a human, exactly as the system prompt requires of the model.
+   */
+  const offlineReply = (question: string): string =>
+    offlineReplies.find(({ match }) => match.test(question))?.reply ??
+    `${outOfScopeReply} You can also reach the team directly at ${contact.email}.`;
+
+  const generateReply = async (question: string, history: Message[]): Promise<string> => {
+    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+    if (!apiKey) return offlineReply(question);
 
     try {
-      const botResponse = await generateBotResponse(inputText);
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: botResponse,
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, botMessage]);
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          // Low temperature: this assistant quotes an institution's
+          // commitments. Inventive phrasing is a liability, not a feature.
+          temperature: 0.3,
+          max_tokens: 512,
+          messages: [
+            { role: "system", content: buildSystemPrompt() },
+            // Prior turns, so "one follow-up question at a time" can actually
+            // resolve — without them the assistant re-asks what it just asked.
+            ...history
+              .filter((message) => message.id !== "greeting")
+              .slice(-HISTORY_TURNS)
+              .map((message) => ({
+                role: message.sender === "user" ? ("user" as const) : ("assistant" as const),
+                content: message.text,
+              })),
+            { role: "user", content: question },
+          ],
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Assistant request failed: ${response.status}`);
+
+      const data = await response.json();
+      const reply: unknown = data?.choices?.[0]?.message?.content;
+
+      return typeof reply === "string" && reply.trim() ? reply.trim() : offlineReply(question);
     } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "I apologize, but I'm experiencing technical difficulties. Please try again later or contact our support team directly.",
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsTyping(false);
+      // The previous implementation logged the API key's length and the full
+      // response body on every message, exposing configuration detail to
+      // anyone with devtools open.
+      console.error("Assistant unavailable; answering from the offline set.", error);
+      return offlineReply(question);
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
+  const ask = async (question: string) => {
+    const trimmed = question.trim();
+    if (!trimmed || isTyping) return;
+
+    const history = messages;
+    setMessages((current) => [
+      ...current,
+      { id: `u-${current.length}`, text: trimmed, sender: "user" },
+    ]);
+    setInput("");
+    setIsTyping(true);
+
+    const reply = await generateReply(trimmed, history);
+
+    setMessages((current) => [...current, { id: `b-${current.length}`, text: reply, sender: "bot" }]);
+    setIsTyping(false);
+  };
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    void ask(input);
   };
 
   if (!isOpen) {
     return (
-      <button
+      <Button
+        ref={triggerRef}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 glass text-gray-800 p-4 rounded-full shadow-3xl hover:shadow-4xl transition-all duration-300 z-50 group hover:scale-110 border border-white/20"
-        aria-label="Open chat"
+        size="icon"
+        className="fixed bottom-5 right-5 z-40 h-14 w-14 rounded-full shadow-xl [&_svg]:size-6"
+        aria-label="Open the Syasan's assistant"
       >
-        <Bot className="w-6 h-6 transition-transform group-hover:scale-110" />
-        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-        <span className="absolute bottom-full right-0 mb-3 px-4 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-2xl">
-          <div className="relative">
-            Need help? Chat with our AI assistant!
-            <div className="absolute top-full right-2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-          </div>
-        </span>
-      </button>
+        <Bot aria-hidden />
+      </Button>
     );
   }
 
   return (
-    <div className={`fixed bottom-6 right-6 bg-white rounded-2xl shadow-4xl z-50 transition-all duration-500 border border-gray-200 ${isMinimized ? 'w-80 h-14' : 'w-96 h-[650px] overflow-hidden'}`}>
-      {/* Header */}
-      <div className="bg-blue-600 border-b border-blue-700 text-white p-4 rounded-t-2xl flex items-center justify-between relative overflow-hidden">
-        <div className="absolute inset-0 bg-blue-600"></div>
-        <div className="relative z-10 flex items-center space-x-3">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200">
-            <img src={syasansLogo} alt="Syasan's Vision" className="w-7 h-7 rounded-full object-cover" />
-          </div>
+    <div
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby={titleId}
+      className="fixed bottom-5 right-5 z-40 flex h-[min(34rem,calc(100vh-2.5rem))] w-[min(23rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+    >
+      <header className="flex items-center justify-between gap-3 border-b border-border bg-surface px-4 py-3">
+        <div className="flex items-center gap-3">
+          <img
+            src={logo}
+            alt=""
+            aria-hidden
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-full object-contain"
+          />
           <div>
-            <span className="font-semibold text-sm">Syasan's Assistant</span>
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-xs opacity-90">Online</span>
-            </div>
+            <p id={titleId} className="text-caption font-semibold text-foreground">
+              Syasan&rsquo;s assistant
+            </p>
+            <p className="flex items-center gap-1.5 text-micro text-muted-foreground">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-success" />
+              Online
+            </p>
           </div>
         </div>
-        <div className="relative z-10 flex items-center space-x-2">
-          <button
-            onClick={() => setIsMinimized(!isMinimized)}
-            className="text-white/80 hover:text-white p-1.5 rounded-md transition-all duration-200 hover:bg-white/10"
-            aria-label={isMinimized ? "Maximize" : "Minimize"}
+
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setIsOpen(false);
+            triggerRef.current?.focus();
+          }}
+          aria-label="Close the assistant"
+        >
+          <X aria-hidden />
+        </Button>
+      </header>
+
+      <div
+        role="log"
+        aria-live="polite"
+        aria-label="Conversation"
+        className="flex-1 space-y-3 overflow-y-auto bg-background p-4"
+      >
+        {messages.map(({ id, text, sender }) => (
+          <div
+            key={id}
+            className={cn("flex", sender === "user" ? "justify-end" : "justify-start")}
           >
-            {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
-          </button>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="text-white/80 hover:text-white p-1.5 rounded-md transition-all duration-200 hover:bg-white/10"
-            aria-label="Close"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+            <p
+              className={cn(
+                "max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-caption leading-relaxed",
+                sender === "user"
+                  ? "rounded-br-md bg-primary text-primary-foreground"
+                  : "rounded-bl-md bg-secondary text-foreground",
+              )}
+            >
+              {text}
+            </p>
+          </div>
+        ))}
+
+        {/* Openers, shown only until the visitor has said something. */}
+        {messages.length === 1 && !isTyping ? (
+          <ul className="flex flex-col items-start gap-2 pt-1">
+            {STARTERS.map((starter) => (
+              <li key={starter}>
+                <button
+                  type="button"
+                  onClick={() => void ask(starter)}
+                  className="min-h-11 rounded-full border border-border bg-card px-4 py-2.5 text-left text-caption text-muted-foreground transition-colors duration-base ease-out hover:border-primary/30 hover:bg-primary-soft hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {starter}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {isTyping ? (
+          <p className="flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-secondary px-3.5 py-3 text-caption text-muted-foreground">
+            <span className="sr-only">The assistant is typing</span>
+            {[0, 1, 2].map((dot) => (
+              <span
+                key={dot}
+                aria-hidden
+                className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground"
+                style={{ animationDelay: `${dot * 120}ms` }}
+              />
+            ))}
+          </p>
+        ) : null}
+
+        <div ref={transcriptEndRef} />
       </div>
 
-      {!isMinimized && (
-        <>
-          {/* Messages */}
-          <div className="h-[480px] overflow-y-auto p-4 space-y-4 bg-gray-50">
-            <div className="space-y-3">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
-                >
-                  <div className={`flex items-end space-x-2 max-w-[85%] ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                    {message.sender === 'bot' && (
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-200 overflow-hidden">
-                        <img src={syasansLogo} alt="Syasan's Vision" className="w-6 h-6 rounded-full object-cover" />
-                      </div>
-                    )}
-                    <div
-                      className={`relative px-4 py-3 rounded-2xl ${
-                        message.sender === 'user'
-                          ? 'bg-blue-600 text-white shadow-lg border border-blue-700'
-                          : 'bg-white text-gray-800 shadow-md border border-gray-100'
-                      }`}
-                    >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
-                      <p className={`text-xs mt-2 ${
-                        message.sender === 'user' ? 'text-white/80' : 'text-gray-400'
-                      }`}>
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                    {message.sender === 'user' && (
-                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 border border-gray-200">
-                        <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {isTyping && (
-                <div className="flex justify-start animate-fadeIn">
-                  <div className="flex items-end space-x-2">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-200 overflow-hidden">
-                      <img src={syasansLogo} alt="Syasan's Vision" className="w-6 h-6 rounded-full object-cover" />
-                    </div>
-                    <div className="bg-white text-gray-800 px-4 py-3 rounded-2xl shadow-md border border-gray-100">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-          </div>
-
-          {/* Input */}
-          <div className="border-t border-gray-200 bg-white p-4">
-            <div className="flex items-center space-x-3">
-              <div className="flex-1 relative">
-                <input
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm transition-all duration-200"
-                  disabled={isTyping}
-                />
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <div className="w-1 h-4 bg-gray-300 rounded-full animate-pulse"></div>
-                </div>
-              </div>
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputText.trim() || isTyping}
-                className="bg-blue-600 text-white p-3 rounded-xl hover:bg-blue-700 hover:shadow-lg transition-all duration-200 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
-                aria-label="Send message"
-              >
-                <Send className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="mt-2 text-center">
-              <p className="text-xs text-gray-400">
-                Powered by AI • Get instant answers about Syasan's Vision
-              </p>
-            </div>
-          </div>
-        </>
-      )}
+      <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-border p-3">
+        <label htmlFor={`${titleId}-input`} className="sr-only">
+          Your message
+        </label>
+        <Input
+          ref={inputRef}
+          id={`${titleId}-input`}
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          placeholder="Ask a question…"
+          autoComplete="off"
+          disabled={isTyping}
+        />
+        <Button type="submit" size="icon" disabled={!input.trim() || isTyping} aria-label="Send">
+          <Send aria-hidden />
+        </Button>
+      </form>
     </div>
   );
 };
