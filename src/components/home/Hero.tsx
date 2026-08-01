@@ -325,9 +325,21 @@ export const Hero = () => (
               track fits roughly fourteen characters per line, and the accent
               phrase alone is forty-one — it would come apart into four ragged
               lines. The explicit break keeps the scale claim whole on its own
-              line; the phrase beneath it is left to wrap naturally, because
-              forcing breaks inside it would only reintroduce the ragged edge
-              at some other width.
+              line; the phrase beneath it wraps naturally.
+
+              Measured at 1440px, the heading renders four lines of 529 / 297 /
+              498 / 275 in a 568px column. It misses three lines by seven
+              pixels: "Industry 5.0 Integrated" wants 575px. Worth knowing
+              before anyone tries to fix the short fourth line — the levers are
+              a hero-only type size below the scale, or dropping the hero grid
+              from `xl:gap-20` to `gap-16`, which buys the column eight pixels
+              and leaves one to spare. Neither is worth it for one word, but
+              they are the options.
+
+              `text-balance` is kept as the sensible default for a heading whose
+              text is content-editable. It is measurably a no-op for this
+              string — identical line boxes with and without — because the
+              break is forced by overflow rather than chosen by the wrapper.
             */}
             <h1 id="hero-heading" className="text-balance text-h1 text-foreground">
               {heroCopy.headline}

@@ -38,7 +38,7 @@ import {
  */
 export const heroCopy = {
   headline: "Tamil Nadu’s Largest",
-  headlineAccent: "AI Integrated Industry Learning Ecosystem",
+  headlineAccent: "Industry 5.0 Integrated Learning Ecosystem",
   subhead:
     "Every cohort starts with a psychometric and competency baseline, so training targets the gaps that are actually there — not a syllabus. You watch readiness move, student by student, through to the offer.",
   /** Scale as a countable fact, next to the claim it backs up. */
@@ -66,7 +66,7 @@ export type Institution = { name: string; location: string; logo?: string };
 
 export const institutions: readonly Institution[] = [
   { name: "IIITDM Kancheepuram", location: "Chennai" },
-  { name: "Madras Social Service Society", location: "Chennai" },
+  { name: "Madras School of Social Work", location: "Chennai" },
   { name: "Sathyabama University", location: "Chennai" },
   { name: "SRM University", location: "Kattankulathur" },
   { name: "BSA Crescent University", location: "Vandalur" },
@@ -74,13 +74,16 @@ export const institutions: readonly Institution[] = [
   { name: "Kalasalingam University", location: "Virudhunagar" },
   { name: "Vels University", location: "Pallavaram" },
   { name: "LEAD College (Autonomous)", location: "Palakkad, Kerala" },
-  { name: "Acharya Institute of Technology", location: "Bengaluru, Karnataka" },
+  { name: "Achariya College of Engineering Technology", location: "Pondicherry" },
   { name: "D.G. Vaishnav College", location: "Arumbakkam" },
-  { name: "St. Joseph's College", location: "Chennai" },
+  { name: "St. Joseph's College of Engineering", location: "OMR, Chennai" },
   { name: "Jeppiaar University", location: "Chennai" },
   { name: "Velammal Colleges", location: "Chennai / Madurai" },
   { name: "Amity Global Business School", location: "Chennai" },
-  { name: "Dhanalakshmi Srinivasan", location: "Trichy" },
+  {
+    name: "Dhanalakshmi Srinivasan Group",
+    location: "Chennai / Perambalur / Samayapuram / Coimbatore",
+  },
 ];
 
 /**

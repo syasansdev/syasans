@@ -24,19 +24,27 @@ type Partner = { name: string; location: string; image?: string };
 
 const institutions: readonly Partner[] = [
   { name: "IIITDM Kancheepuram", location: "Kancheepuram, Chennai" },
-  { name: "Madras Social Service Society", location: "Chennai" },
+  { name: "Madras School of Social Work", location: "Chennai" },
   { name: "Sathyabama University", location: "Chennai", image: "/assets/Sathyabama.png" },
-  { name: "Dhanalakshmi Srinivasan University", location: "Trichy", image: "/assets/Dhanalakshmi.png" },
+  {
+    name: "Dhanalakshmi Srinivasan Group",
+    location: "Chennai, Perambalur, Samayapuram & Coimbatore",
+    image: "/assets/Dhanalakshmi.png",
+  },
   { name: "BSA Abdur Rahman Crescent University", location: "Vandalur, Chennai", image: "/assets/Crescent_college.png" },
   { name: "Jeppiaar University", location: "Chennai", image: "/assets/jeppiarcollege.png" },
   { name: "Amity Global Business School", location: "Chennai", image: "/assets/amity.png" },
   { name: "Sairam Group of Institutions", location: "West Tambaram, Chennai", image: "/assets/Sairam.png" },
-  { name: "St. Joseph's College of Engineering", location: "Chennai", image: "/assets/StJosephscollege.png" },
+  {
+    name: "St. Joseph's College of Engineering (Jeppiaar Group)",
+    location: "OMR, Chennai",
+    image: "/assets/StJosephscollege.png",
+  },
   { name: "D.G. Vaishnav College", location: "Arumbakkam, Chennai" },
   { name: "Vels University", location: "Pallavaram, Chennai", image: "/assets/vels.png" },
   { name: "SRM University", location: "Kattankulathur, Chennai", image: "/assets/srm.png" },
   { name: "LEAD College of Management (Autonomous)", location: "Palakkad, Kerala" },
-  { name: "Acharya Institute of Technology", location: "Bengaluru, Karnataka" },
+  { name: "Achariya College of Engineering Technology", location: "Pondicherry" },
   { name: "Velammal Group of Engineering Colleges", location: "Chennai / Madurai", image: "/assets/vellamal.png" },
   { name: "Kalasalingam University", location: "Virudhunagar", image: "/assets/kalasalingam.png" },
 ];
