@@ -1,9 +1,17 @@
 import {
   Award,
+  BarChart3,
+  BookOpen,
   Check,
+  ClipboardList,
   Cpu,
+  FileBarChart,
+  FlaskConical,
+  Lock,
+  Monitor,
   Server,
   Shield,
+  Timer,
   Users,
   Zap,
   type LucideIcon,
@@ -25,6 +33,7 @@ import {
   SectionHeader,
 } from "@/components/ui/section";
 import QuantumServerImage from "@/assets/Quantum_Server.jpg";
+import UrNotedImage from "@/assets/WhatsApp Image 2026-08-01 at 23.06.53.jpeg";
 
 type Highlight = { title: string; description: string; icon: LucideIcon };
 
@@ -77,6 +86,72 @@ const handbookFeatures = [
   "Exam focus: Bank PO, UPSC, GATE, CAT, TANSET and TNPSC",
   "Industry 5.0 specific concepts for quantitative, reasoning and logical ability",
   "3,500+ actual questions with answers",
+];
+
+const skillBillHighlights: Highlight[] = [
+  {
+    title: "Company-specific aptitude assessments",
+    description:
+      "Institutions can configure and run tests tailored to each recruiting company's syllabus and format, so students prepare for exactly the right paper.",
+    icon: FlaskConical,
+  },
+  {
+    title: "Real-time online examinations",
+    description:
+      "Secure, browser-based test delivery with a live proctoring layer — every submission is timestamped and locked the moment time expires.",
+    icon: Monitor,
+  },
+  {
+    title: "Performance analytics and reports",
+    description:
+      "Detailed score breakdowns, topic-level heat maps and batch comparison charts generated automatically after every test.",
+    icon: FileBarChart,
+  },
+  {
+    title: "Engineering placement preparation",
+    description:
+      "Curated question banks aligned to top engineering recruiters, with difficulty tiers that match each company's interview bar.",
+    icon: BookOpen,
+  },
+  {
+    title: "Secure and scalable platform",
+    description:
+      "Role-based access for coordinators, faculty and students keeps data in the right hands while the engine scales to the whole batch simultaneously.",
+    icon: Lock,
+  },
+];
+
+const urNotedHighlights: Highlight[] = [
+  {
+    title: "Digital attendance recording",
+    description:
+      "Replace paper registers entirely — trainers mark attendance on any device and the record is saved instantly to a centralised log.",
+    icon: ClipboardList,
+  },
+  {
+    title: "Fast and accurate session tracking",
+    description:
+      "Bulk mark, individual override and late-entry corrections take seconds, so the register is always correct before the session ends.",
+    icon: Timer,
+  },
+  {
+    title: "Real-time attendance reports",
+    description:
+      "Cumulative percentage, session-by-session breakdown and absentee alerts available the moment a session is closed.",
+    icon: BarChart3,
+  },
+  {
+    title: "Trainer-friendly interface",
+    description:
+      "A minimal, tap-first design means trainers can take attendance while speaking — no extra cognitive load or training required.",
+    icon: Users,
+  },
+  {
+    title: "Reliable attendance management",
+    description:
+      "Offline-capable data layer syncs to the cloud as soon as connectivity is restored, so no session is ever lost due to a dropped signal.",
+    icon: Server,
+  },
 ];
 
 /** Shared icon + copy row used by both product sections. */
@@ -177,6 +252,82 @@ export default function Products() {
                   loading="lazy"
                   decoding="async"
                   className="aspect-[4/3] w-full object-cover"
+                />
+              </MediaFrame>
+            </Reveal>
+          </div>
+        </Container>
+      </Section>
+
+      {/* Skill Bill */}
+      <Section tone="surface" aria-labelledby="skillbill-heading">
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="skillbill-heading"
+            title="Skill Bill"
+            description="Online aptitude assessment platform designed for engineering students — enabling institutions to run company-specific tests, evaluate performance and generate analytical reports."
+          />
+
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <Reveal variant="scale-in">
+              <MediaFrame>
+                {/* Placeholder: branded gradient with aptitude-themed iconography */}
+                <div className="aspect-[4/3] w-full flex flex-col items-center justify-center gap-6 bg-gradient-to-br from-primary/10 via-surface-strong to-accent/10">
+                  <div className="flex items-center justify-center h-20 w-20 rounded-2xl bg-gradient-to-br from-primary to-accent shadow-lg">
+                    <FlaskConical className="h-10 w-10 text-white" strokeWidth={1.5} />
+                  </div>
+                  <div className="text-center px-8">
+                    <p className="text-h4 font-semibold text-foreground">Skill Bill</p>
+                    <p className="mt-1 text-caption text-muted-foreground">Aptitude Assessment Platform</p>
+                  </div>
+                  <div className="flex gap-3">
+                    {[Monitor, FileBarChart, BarChart3].map((Icon, i) => (
+                      <div key={i} className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Icon className="h-4 w-4" strokeWidth={1.75} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </MediaFrame>
+            </Reveal>
+
+            <HighlightList items={skillBillHighlights} />
+          </div>
+        </Container>
+      </Section>
+
+      {/* UrNoted */}
+      <Section tone="default" aria-labelledby="urnoted-heading">
+        <AmbientBackdrop />
+
+        <Container className="flex flex-col gap-14">
+          <SectionHeader
+            id="urnoted-heading"
+            title="UrNoted"
+            description="Intelligent attendance management solution that simplifies attendance recording during training sessions, workshops, seminars, and classrooms with minimal effort."
+          />
+
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <div className="flex flex-col gap-8">
+              <Reveal>
+                <p className="max-w-measure text-lead text-foreground">
+                  Paper registers and spreadsheet workarounds slow trainers down and introduce errors.
+                  UrNoted turns attendance into a two-tap action &mdash; leaving more time for the
+                  session itself.
+                </p>
+              </Reveal>
+
+              <HighlightList items={urNotedHighlights} />
+            </div>
+
+            <Reveal variant="scale-in" className="lg:order-first">
+              <MediaFrame>
+                <img
+                  src={UrNotedImage}
+                  alt="UrNoted — Smart Attendance. Seamless Records. Official product visual by Syasan's Career Analytics"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-auto object-contain block"
                 />
               </MediaFrame>
             </Reveal>
